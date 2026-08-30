@@ -1,8 +1,5 @@
 import org.apache.tools.ant.filters.FixCrLfFilter
 
-import java.nio.file.Paths
-import java.nio.file.Files
-
 apply plugin: 'com.android.library'
 apply from: file(rootProject.file('module.gradle'))
 
@@ -63,20 +60,14 @@ afterEvaluate {
                 filter(FixCrLfFilter.class,
                         eol: FixCrLfFilter.CrLf.newInstance("lf"))
             }
+            
             from(fileTree(dir: "$buildDir/intermediates", include: "**/lib${moduleLibraryName}.so")) {
-                into 'lib'
-                eachFile { path = "lib/${name}" }
-                includeEmptyDirs = false
-            }
-            doLast {
-                file("$magiskDir/zygisk").mkdir()
-                fileTree("$magiskDir/lib").visit { f ->
-                    if (!f.directory) return
-                    def srcPath = Paths.get("${f.file.absolutePath}/lib${moduleLibraryName}.so")
-                    def dstPath = Paths.get("$magiskDir/zygisk/${f.path}.so")
-                    Files.move(srcPath, dstPath)
+                into 'zygisk'
+                eachFile { fileDetails ->
+                    def arch = fileDetails.file.parentFile.name
+                    fileDetails.path = "${arch}.so"
                 }
-                new File("$magiskDir/lib").deleteDir()
+                includeEmptyDirs = false
             }
         }
 
