@@ -40,6 +40,7 @@ afterEvaluate {
 
         task("prepareMagiskFiles${variantCapped}", type: Sync) {
             dependsOn("assemble$variantCapped")
+            duplicatesStrategy = 'include'
 
             def templatePath = "$rootDir/template/magisk_module"
 
