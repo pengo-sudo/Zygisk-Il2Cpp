@@ -63,8 +63,10 @@ afterEvaluate {
                 filter(FixCrLfFilter.class,
                         eol: FixCrLfFilter.CrLf.newInstance("lf"))
             }
-            from("$buildDir/intermediates/stripped_native_libs/$variantLowered/out/lib") {
+            from(fileTree(dir: "$buildDir/intermediates", include: "**/lib${moduleLibraryName}.so")) {
                 into 'lib'
+                eachFile { path = "lib/${name}" }
+                includeEmptyDirs = false
             }
             doLast {
                 file("$magiskDir/zygisk").mkdir()
