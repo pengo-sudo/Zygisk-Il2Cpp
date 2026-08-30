@@ -16,7 +16,7 @@ android {
         }
     }
     buildFeatures {
-        prefab true
+        prefab false
     }
     externalNativeBuild {
         cmake {
